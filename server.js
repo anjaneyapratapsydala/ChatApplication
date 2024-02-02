@@ -1,4 +1,5 @@
 require('dotenv').config();
+const cors = require('cors');
 const express = require("express");
 const dotenv = require("dotenv");
 const path = require("path");
@@ -11,7 +12,7 @@ const app = express();
 app.use(express.json()); 
 dotenv.config({ path: path.join(__dirname, "./.env") }); 
 connectToMongoDB(); // Connect to Database
-
+app.use(cors());
 app.use("/api/user", userRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/message", messageRoutes);
@@ -40,10 +41,10 @@ app.use(errorHandler);
 const server = app.listen(process.env.PORT, () =>
   console.log(`Server started on PORT ${process.env.PORT}`)
 );
-
 const io = require("socket.io")(server, {
   cors: {
     origin: "*",
+    methods: ["GET", "POST"]
   },
   pingTimeout: 60 * 1000,
 });
